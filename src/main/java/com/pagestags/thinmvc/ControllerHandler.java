@@ -37,7 +37,10 @@ public class ControllerHandler extends SimpleChannelInboundHandler<Object> {
 
 	private Map<String, BaseController> controllers;
 
-	public ControllerHandler(Map<String, BaseController> controllers) {
+	private String basePath;
+
+	public ControllerHandler(String basePath, Map<String, BaseController> controllers) {
+		this.basePath = basePath;
 		this.controllers = controllers;
 	}
 
@@ -80,6 +83,13 @@ public class ControllerHandler extends SimpleChannelInboundHandler<Object> {
 	}
 
 	private BaseController getController(String uri) {
+		if (!basePath.isEmpty()) {
+			if (uri.startsWith(basePath)) {
+				uri = uri.replaceAll(basePath + "/?", "/");
+			} else {
+				throw new ServiceException.NotFound();
+			}
+		}
 		for (Entry<String, BaseController> entry : controllers.entrySet()) {
 			if (Pattern.matches(entry.getKey(), uri)) {
 				return entry.getValue();

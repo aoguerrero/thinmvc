@@ -2,6 +2,7 @@ package com.pagestags.thinmvc;
 
 import static com.pagestags.thinmvc.Constants.ENABLE_CACHE;
 import static com.pagestags.thinmvc.Constants.PORT;
+import static com.pagestags.thinmvc.Constants.BASE_PATH;
 
 import java.util.Map;
 
@@ -30,6 +31,8 @@ public class Application {
 
 	public static void start(Map<String, BaseController> controllers) throws InterruptedException {
 		String port = System.getProperty(PORT, "8080");
+		
+		String basePath = System.getProperty(BASE_PATH, "");
 
 		EventLoopGroup parentGroup = new NioEventLoopGroup();
 		EventLoopGroup childGroup = new NioEventLoopGroup();
@@ -42,12 +45,13 @@ public class Application {
 							ChannelPipeline channelPipeline = socketChannel.pipeline();
 							channelPipeline.addLast(new HttpRequestDecoder());
 							channelPipeline.addLast(new HttpResponseEncoder());
-							channelPipeline.addLast(new ControllerHandler(controllers));
+							channelPipeline.addLast(new ControllerHandler(basePath, controllers));
 						}
 					});
 			ChannelFuture channelFuture = serverBootstrap.bind(Integer.valueOf(port)).sync();
-			logger.info("Accepted JVM parameters: 'enable_cache', 'port'");
+			logger.info("Accepted JVM parameters: 'base_path', 'enable_cache', 'port'");
 			logger.info("Application listening on port: {}", port);
+			logger.info("Base path: {}", basePath);
 			logger.info("Cache enabled: {}", System.getProperty(ENABLE_CACHE, "false"));
 			logger.info("Endpoint paths:");
 			for (String path : controllers.keySet()) {

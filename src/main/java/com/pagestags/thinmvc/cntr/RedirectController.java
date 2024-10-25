@@ -1,5 +1,7 @@
 package com.pagestags.thinmvc.cntr;
 
+import static com.pagestags.thinmvc.Constants.BASE_PATH;
+
 import com.pagestags.thinmvc.mdl.Response;
 import com.pagestags.thinmvc.utl.HttpUtils;
 
@@ -11,11 +13,13 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 public abstract class RedirectController implements BaseController {
 
 	protected final String path;
+	protected final String basePath;
 	private HttpRequest request;
 	private HttpHeaders responseHeaders;
 
 	protected RedirectController(String path) {
 		this.path = path;
+		this.basePath = System.getProperty(BASE_PATH);
 	}
 
 	public abstract String execute();

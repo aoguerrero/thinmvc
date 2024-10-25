@@ -1,5 +1,6 @@
 package com.pagestags.thinmvc.cntr;
 
+import static com.pagestags.thinmvc.Constants.BASE_PATH;
 import static com.pagestags.thinmvc.Constants.ENABLE_CACHE;
 
 import java.util.HashMap;
@@ -19,6 +20,7 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 public class StaticController implements BaseController {
 
 	private final String path;
+	protected final String basePath;
 
 	private Map<String, byte[]> staticCache;
 
@@ -26,6 +28,7 @@ public class StaticController implements BaseController {
 
 	public StaticController(String path) {
 		this.path = path;
+		this.basePath = System.getProperty(BASE_PATH);
 		this.staticCache = new HashMap<>();
 		this.cacheEnable = Boolean.valueOf(System.getProperty(ENABLE_CACHE, "false"));
 	}

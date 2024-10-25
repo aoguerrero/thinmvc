@@ -1,5 +1,7 @@
 package com.pagestags.thinmvc.cntr;
 
+import static com.pagestags.thinmvc.Constants.BASE_PATH;
+
 import java.util.Map;
 
 import com.pagestags.thinmvc.mdl.Response;
@@ -13,6 +15,7 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 public abstract class FormController implements BaseController {
 
 	protected final String path;
+	protected final String basePath;
 	private HttpRequest request;
 	private HttpHeaders responseHeaders;
 	private Map<String, String> formData;
@@ -20,6 +23,7 @@ public abstract class FormController implements BaseController {
 
 	protected FormController(String path) {
 		this.path = path;
+		this.basePath = System.getProperty(BASE_PATH);
 	}
 
 	public abstract String execute();
