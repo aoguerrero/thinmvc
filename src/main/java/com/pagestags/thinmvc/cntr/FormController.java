@@ -38,9 +38,9 @@ public abstract class FormController implements BaseController {
 		}
 		String id = execute();
 		if (id != null)
-			responseHeaders.add(HttpUtils.LOCATION, this.path.replace("{id}", id));
+			responseHeaders.add(HttpUtils.LOCATION, this.basePath + this.path.replace("{id}", id));
 		else
-			responseHeaders.add(HttpUtils.LOCATION, this.path);
+			responseHeaders.add(HttpUtils.LOCATION, this.basePath + this.path);
 
 		return new Response(HttpResponseStatus.TEMPORARY_REDIRECT, responseHeaders, new byte[] {});
 	}

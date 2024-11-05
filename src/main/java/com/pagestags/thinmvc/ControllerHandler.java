@@ -83,15 +83,8 @@ public class ControllerHandler extends SimpleChannelInboundHandler<Object> {
 	}
 
 	private BaseController getController(String uri) {
-		if (!basePath.isEmpty()) {
-			if (uri.startsWith(basePath)) {
-				uri = uri.replaceAll(basePath + "/?", "/");
-			} else {
-				throw new ServiceException.NotFound();
-			}
-		}
 		for (Entry<String, BaseController> entry : controllers.entrySet()) {
-			if (Pattern.matches(entry.getKey(), uri)) {
+			if (Pattern.matches(basePath + entry.getKey(), uri)) {
 				return entry.getValue();
 			}
 		}
