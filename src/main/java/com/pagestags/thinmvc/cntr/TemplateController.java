@@ -59,6 +59,7 @@ public abstract class TemplateController implements BaseController {
 				velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
 				velocityEngine.init();
 			}
+			velocityContext.put("base_path",  basePath);
 			velocityContext.put("current_path", FileSystemUtils.getDirectory(path));
 
 			velocityEngine.evaluate(velocityContext, writer, "", new String(template, StandardCharsets.UTF_8));
