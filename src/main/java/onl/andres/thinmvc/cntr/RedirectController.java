@@ -1,14 +1,11 @@
-package com.pagestags.thinmvc.cntr;
-
-import static com.pagestags.thinmvc.ThinmvcParameters.BASE_PATH;
-
-import com.pagestags.thinmvc.mdl.Response;
-import com.pagestags.thinmvc.utl.HttpUtils;
+package onl.andres.thinmvc.cntr;
 
 import io.netty.handler.codec.http.DefaultHttpHeaders;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import onl.andres.thinmvc.mdl.Response;
+import onl.andres.thinmvc.utl.HttpUtils;
 
 public abstract class RedirectController implements BaseController {
 
@@ -27,11 +24,10 @@ public abstract class RedirectController implements BaseController {
 		this.request = request;
 		this.responseHeaders = new DefaultHttpHeaders();
 		String id = execute();
-		String basePath = BASE_PATH.get();
 		if (id != null)
-			responseHeaders.add(HttpUtils.LOCATION, basePath + this.path.replace("{id}", id));
+			responseHeaders.add(HttpUtils.LOCATION, this.path.replace("{id}", id));
 		else
-			responseHeaders.add(HttpUtils.LOCATION, basePath + this.path);
+			responseHeaders.add(HttpUtils.LOCATION, this.path);
 		return new Response(HttpResponseStatus.TEMPORARY_REDIRECT, responseHeaders, new byte[] {});
 	}
 

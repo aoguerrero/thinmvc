@@ -1,15 +1,12 @@
-package com.pagestags.thinmvc;
+package onl.andres.thinmvc;
 
-import static com.pagestags.thinmvc.ThinmvcParameters.BASE_PATH;
-import static com.pagestags.thinmvc.ThinmvcParameters.ENABLE_CACHE;
-import static com.pagestags.thinmvc.ThinmvcParameters.PORT;
+import static onl.andres.thinmvc.ThinmvcParameters.ENABLE_CACHE;
+import static onl.andres.thinmvc.ThinmvcParameters.PORT;
 
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.pagestags.thinmvc.cntr.BaseController;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -20,7 +17,8 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.http.HttpRequestDecoder;
-import io.netty.handler.codec.http.HttpResponseEncoder;;
+import io.netty.handler.codec.http.HttpResponseEncoder;
+import onl.andres.thinmvc.cntr.BaseController;;
 
 public class Application {
 
@@ -31,7 +29,6 @@ public class Application {
 
 	public static void start(Map<String, BaseController> controllers) throws InterruptedException {
 		String port = PORT.get();
-		String basePath = BASE_PATH.get();
 
 		EventLoopGroup parentGroup = new NioEventLoopGroup();
 		EventLoopGroup childGroup = new NioEventLoopGroup();
@@ -44,14 +41,13 @@ public class Application {
 							ChannelPipeline channelPipeline = socketChannel.pipeline();
 							channelPipeline.addLast(new HttpRequestDecoder());
 							channelPipeline.addLast(new HttpResponseEncoder());
-							channelPipeline.addLast(new ControllerHandler(basePath, controllers));
+							channelPipeline.addLast(new ControllerHandler(controllers));
 						}
 					});
 			ChannelFuture channelFuture = serverBootstrap.bind(Integer.valueOf(port)).sync();
-			logger.info("Accepted JVM parameters: '{}', '{}', '{}'", PORT.getName(), BASE_PATH.getName(),
+			logger.info("Accepted JVM parameters: '{}', '{}'", PORT.getName(),
 					ENABLE_CACHE.getName());
 			logger.info("Application listening on port: {}", port);
-			logger.info("Base path: {}", basePath);
 			logger.info("Cache enabled: {}", ENABLE_CACHE.get());
 			logger.info("Endpoint paths:");
 			controllers.keySet().stream().forEach(path -> logger.info(path));

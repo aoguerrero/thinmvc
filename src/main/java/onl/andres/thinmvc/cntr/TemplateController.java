@@ -1,7 +1,6 @@
-package com.pagestags.thinmvc.cntr;
+package onl.andres.thinmvc.cntr;
 
-import static com.pagestags.thinmvc.ThinmvcParameters.BASE_PATH;
-import static com.pagestags.thinmvc.ThinmvcParameters.ENABLE_CACHE;
+import static onl.andres.thinmvc.ThinmvcParameters.ENABLE_CACHE;
 
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
@@ -12,14 +11,14 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 
-import com.pagestags.thinmvc.mdl.Response;
-import com.pagestags.thinmvc.utl.FileSystemUtils;
-import com.pagestags.thinmvc.utl.HttpUtils;
-
 import io.netty.handler.codec.http.DefaultHttpHeaders;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import onl.andres.thinmvc.mdl.Response;
+import onl.andres.thinmvc.utl.ContentType;
+import onl.andres.thinmvc.utl.FileSystemUtils;
+import onl.andres.thinmvc.utl.HttpUtils;
 
 public abstract class TemplateController implements BaseController {
 
@@ -27,7 +26,7 @@ public abstract class TemplateController implements BaseController {
 	protected HttpRequest request;
 	private Map<String, byte[]> templatesCache;
 	private VelocityEngine velocityEngine;
-	
+
 	public final static String CURRENT_PATH = "current_path";
 
 	protected TemplateController(String path) {
@@ -46,11 +45,10 @@ public abstract class TemplateController implements BaseController {
 	public Response execute(HttpRequest request, byte[] body) {
 		this.request = request;
 		HttpHeaders headers = new DefaultHttpHeaders();
-		headers.add(HttpUtils.CONTENT_TYPE, HttpUtils.getContentType("html"));
+		headers.add(HttpUtils.CONTENT_TYPE, ContentType.HTML.getStr());
 		headers.add(HttpUtils.CACHE_CONTROL, HttpUtils.CACHE_CONTROL_NO_STORE);
 		Map<String, Object> context = getContext();
 		VelocityContext velocityContext = new VelocityContext(context);
-		velocityContext.put(BASE_PATH.getName(), BASE_PATH.get());
 
 		byte[] template = getTemplate(path);
 		StringWriter writer = new StringWriter();

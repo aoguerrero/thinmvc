@@ -1,4 +1,4 @@
-package com.pagestags.thinmvc.excp;
+package onl.andres.thinmvc.excp;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

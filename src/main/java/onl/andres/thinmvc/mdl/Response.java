@@ -1,4 +1,4 @@
-package com.pagestags.thinmvc.mdl;
+package onl.andres.thinmvc.mdl;
 
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpResponseStatus;

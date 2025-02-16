@@ -1,4 +1,4 @@
-package com.pagestags.thinmvc;
+package onl.andres.thinmvc;
 
 import static io.netty.handler.codec.http.HttpResponseStatus.BAD_REQUEST;
 import static io.netty.handler.codec.http.HttpResponseStatus.INTERNAL_SERVER_ERROR;
@@ -13,11 +13,6 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.pagestags.thinmvc.cntr.BaseController;
-import com.pagestags.thinmvc.excp.ServiceException;
-import com.pagestags.thinmvc.mdl.Response;
-import com.pagestags.thinmvc.utl.FileSystemUtils;
-
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
@@ -30,6 +25,10 @@ import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.LastHttpContent;
+import onl.andres.thinmvc.cntr.BaseController;
+import onl.andres.thinmvc.excp.ServiceException;
+import onl.andres.thinmvc.mdl.Response;
+import onl.andres.thinmvc.utl.FileSystemUtils;
 
 public class ControllerHandler extends SimpleChannelInboundHandler<Object> {
 
@@ -37,10 +36,7 @@ public class ControllerHandler extends SimpleChannelInboundHandler<Object> {
 
 	private Map<String, BaseController> controllers;
 
-	private String basePath;
-
-	public ControllerHandler(String basePath, Map<String, BaseController> controllers) {
-		this.basePath = basePath;
+	public ControllerHandler(Map<String, BaseController> controllers) {
 		this.controllers = controllers;
 	}
 
@@ -83,11 +79,10 @@ public class ControllerHandler extends SimpleChannelInboundHandler<Object> {
 	}
 
 	private BaseController getController(String uri) {
-		if(basePath.equals(uri))
-			uri += "/";
 		for (Entry<String, BaseController> entry : controllers.entrySet()) {
-			if (Pattern.matches(basePath + entry.getKey(), uri)) {
-				return entry.getValue();
+			if (Pattern.matches(entry.getKey(), uri)) {
+				BaseController controller = entry.getValue();
+				return controller;
 			}
 		}
 		throw new ServiceException.NotFound();

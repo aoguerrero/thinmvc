@@ -1,8 +1,8 @@
-package com.pagestags.thinmvc;
+package onl.andres.thinmvc;
 
 public enum ThinmvcParameters {
 
-	PORT("port", "8080"), ENABLE_CACHE("enable_cache", "false"), BASE_PATH("base_path", "");
+	PORT("port", "8080"), ENABLE_CACHE("enable_cache", "false");
 
 	private final String name;
 	private final String defaultValue;

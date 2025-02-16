@@ -1,35 +1,14 @@
-package com.pagestags.thinmvc.utl;
+package onl.andres.thinmvc.utl;
 
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.pagestags.thinmvc.excp.ServiceException;
 
 public class HttpUtils {
 
 	private HttpUtils() {
 	}
-
-	// @formatter:off
-    static final Map<String, String> contentTypes = Map.ofEntries(
-            new AbstractMap.SimpleEntry<>("CSS", "text/css; charset=utf-8"),
-            new AbstractMap.SimpleEntry<>("HTML", "text/html; charset=utf-8"),
-            new AbstractMap.SimpleEntry<>("JS", "text/javascript; charset=utf-8"),
-            new AbstractMap.SimpleEntry<>("TXT", "text/plain; charset=utf-8"),
-            new AbstractMap.SimpleEntry<>("GIF", "image/gif"), 
-            new AbstractMap.SimpleEntry<>("ICO", "image/x-icon"),
-            new AbstractMap.SimpleEntry<>("JPEG", "image/jpeg"), 
-            new AbstractMap.SimpleEntry<>("JPG", "image/jpeg"),
-            new AbstractMap.SimpleEntry<>("PNG", "image/png"), 
-            new AbstractMap.SimpleEntry<>("SVG", "image/svg+xml"),
-            new AbstractMap.SimpleEntry<>("PDF", "application/pdf"),
-            new AbstractMap.SimpleEntry<>("JSON", "application/json"),
-            new AbstractMap.SimpleEntry<>("ZIP", "application/zip"));          
-            
-    // @formatter:on
 
 	public static final String CONTENT_TYPE = "Content-Type";
 	public static final String LOCATION = "Location";
@@ -43,13 +22,18 @@ public class HttpUtils {
 	public static final String FORM_MULTIPART = "multipart/form-data";
 	public static final String APPLICATION_JSON = "application/json";
 
-	public static final String HTML_CONTENT_TYPE = contentTypes.get("HTML");
-
 	public static Map<String, String> bodyToForm(byte[] body) {
-		return bodyToForm(new String(body, StandardCharsets.UTF_8));
+		return getParams(new String(body, StandardCharsets.UTF_8));
+	}
+	
+	public static Map<String, String> getUrlParams(final String url) {
+		if(!url.contains("?"))
+			return new HashMap<>();
+		String paramsPart = url.substring(url.lastIndexOf('?')+1, url.length());
+		return getParams(paramsPart);
 	}
 
-	public static Map<String, String> bodyToForm(String body) {
+	public static Map<String, String> getParams(final String body) {
 		Map<String, String> result = new HashMap<>();
 		if (body != null) {
 			for (String row : body.split("&")) {
@@ -76,11 +60,6 @@ public class HttpUtils {
 
 	public static String getContentType(String path) {
 		String ext = path.substring(path.lastIndexOf('.') + 1, path.length()).toUpperCase();
-
-		String contentType = contentTypes.get(ext);
-		if (contentType != null)
-			return contentType;
-
-		throw new ServiceException.BadRequest();
+		return ContentType.valueOf(ext).getStr();
 	}
 }
