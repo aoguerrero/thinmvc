@@ -10,20 +10,18 @@ import onl.andres.thinmvc.utl.HttpUtils;
 public abstract class RedirectController implements BaseController {
 
 	protected final String path;
-	private HttpRequest request;
 	private HttpHeaders responseHeaders;
 
 	protected RedirectController(String path) {
 		this.path = path;
 	}
 
-	public abstract String execute();
+	public abstract String execute(HttpRequest request);
 
 	@Override
 	public Response execute(HttpRequest request, byte[] body) {
-		this.request = request;
 		this.responseHeaders = new DefaultHttpHeaders();
-		String id = execute();
+		String id = execute(request);
 		if (id != null)
 			responseHeaders.add(HttpUtils.LOCATION, this.path.replace("{id}", id));
 		else
@@ -35,7 +33,4 @@ public abstract class RedirectController implements BaseController {
 		return responseHeaders;
 	}
 
-	public HttpRequest getRequest() {
-		return request;
-	}
 }

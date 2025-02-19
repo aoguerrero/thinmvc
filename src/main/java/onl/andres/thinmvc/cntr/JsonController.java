@@ -22,16 +22,16 @@ public abstract class JsonController<I, O> implements BaseController {
 		this.gson = new Gson();
 	}
 
-	public abstract O execute(I input);
+	public abstract O execute(HttpRequest request, I input);
 
 	@Override
 	public Response execute(HttpRequest request, byte[] body) {
 		HttpHeaders headers = new DefaultHttpHeaders();
 		headers.add(HttpUtils.CONTENT_TYPE, HttpUtils.APPLICATION_JSON);
-		if(body.length == 0) 
+		if (body.length == 0)
 			throw new ServiceException.BadRequest();
 		I input = gson.fromJson(new String(body, StandardCharsets.UTF_8), inputType);
-		String output = gson.toJson(execute(input));
+		String output = gson.toJson(execute(request, input));
 		return new Response(HttpResponseStatus.OK, headers, output.getBytes());
 	}
 }

@@ -19,12 +19,12 @@ public abstract class FormController implements BaseController {
 		this.path = path;
 	}
 
-	public abstract Optional<String> execute(Map<String, String> formData);
+	public abstract Optional<String> execute(HttpRequest request, Map<String, String> formData);
 
 	@Override
 	public Response execute(HttpRequest request, byte[] body) {
 		this.responseHeaders = new DefaultHttpHeaders();
-		var opId = execute(HttpUtils.bodyToForm(body));
+		var opId = execute(request, HttpUtils.bodyToForm(body));
 		opId.ifPresentOrElse(id -> responseHeaders.add(HttpUtils.LOCATION, this.path.replace("{id}", id)),
 				() -> responseHeaders.add(HttpUtils.LOCATION, this.path));
 		return new Response(HttpResponseStatus.TEMPORARY_REDIRECT, responseHeaders, new byte[] {});

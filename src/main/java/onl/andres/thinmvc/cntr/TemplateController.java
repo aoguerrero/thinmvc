@@ -23,7 +23,6 @@ import onl.andres.thinmvc.utl.HttpUtils;
 public abstract class TemplateController implements BaseController {
 
 	protected final String path;
-	protected HttpRequest request;
 	private Map<String, byte[]> templatesCache;
 	private VelocityEngine velocityEngine;
 
@@ -40,14 +39,13 @@ public abstract class TemplateController implements BaseController {
 		}
 	}
 
-	public abstract Map<String, Object> getContext();
+	public abstract Map<String, Object> getContext(HttpRequest request);
 
 	public Response execute(HttpRequest request, byte[] body) {
-		this.request = request;
 		HttpHeaders headers = new DefaultHttpHeaders();
 		headers.add(HttpUtils.CONTENT_TYPE, ContentType.HTML.getStr());
 		headers.add(HttpUtils.CACHE_CONTROL, HttpUtils.CACHE_CONTROL_NO_STORE);
-		Map<String, Object> context = getContext();
+		Map<String, Object> context = getContext(request);
 		VelocityContext velocityContext = new VelocityContext(context);
 
 		byte[] template = getTemplate(path);

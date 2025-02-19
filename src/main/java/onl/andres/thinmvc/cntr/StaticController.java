@@ -28,13 +28,19 @@ public class StaticController implements BaseController {
 	public Response execute(HttpRequest request, byte[] body) {
 		String uri = request.uri();
 		var params = HttpUtils.getUrlParams(uri);
-		String resPath = params.get("path");
-		if (resPath == null || resPath.trim().length() == 0 || resPath.contains("..") || resPath.contains(":")
-				|| resPath.contains("//") || resPath.contains("\\") || resPath.startsWith("/"))
-			throw new ServiceException.BadRequest();
-		String filePath = baseDir + resPath;
+
 		HttpHeaders headers = new DefaultHttpHeaders();
-		headers.add(HttpUtils.CONTENT_TYPE, HttpUtils.getContentType(filePath));
+		String filePath = baseDir;
+
+		if (baseDir.endsWith("/")) {
+			String resPath = params.get("path");
+			if (resPath == null || resPath.trim().length() == 0 || resPath.contains("..") || resPath.contains(":")
+					|| resPath.contains("//") || resPath.contains("\\") || resPath.startsWith("/"))
+				throw new ServiceException.BadRequest();
+
+			filePath = baseDir + resPath;
+			headers.add(HttpUtils.CONTENT_TYPE, HttpUtils.getContentType(filePath));
+		}
 		headers.add(HttpUtils.CACHE_CONTROL, HttpUtils.CACHE_CONTROL_3_MONTH);
 		return new Response(HttpResponseStatus.OK, headers, getContent(filePath));
 	}
